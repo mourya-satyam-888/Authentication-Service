@@ -1,9 +1,11 @@
 package com.authenticationservice.services;
 
+import com.authenticationservice.entity.User;
+import com.authenticationservice.model.CustomUserDetails;
 import com.authenticationservice.repository.UserRepo;
 import java.util.ArrayList;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,10 +17,12 @@ public class CustomUserDetailsService implements UserDetailsService {
   @Autowired
   private UserRepo userRepo;
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return new User("satyam","satyam",new ArrayList<>());
+  public CustomUserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+    final Optional< User> user=userRepo.findByUsername(username);
+    user.orElseThrow(()->new UsernameNotFoundException("Not found "+username));
+    return user.map(CustomUserDetails::new).get();
   }
-  public boolean isUserPresent(String username){
-    return true;
+  public boolean isUserPresent(final String username){
+    return userRepo.findByUsername(username).isPresent();
   }
 }
