@@ -1,8 +1,10 @@
 package com.authenticationservice.util;
 
+import com.authenticationservice.constants.TimeConstants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +21,7 @@ public class JwtUtil {
     return Jwts.builder().setClaims(claims)
         .setSubject(userDetails.getUsername())
         .setIssuedAt(new Date(System.currentTimeMillis()))
-        .setExpiration(new Date(System.currentTimeMillis()+1000*60*60*1000))
+        .setExpiration(new Date(System.currentTimeMillis()+ TimeConstants.EXPIRY_TIME))
         .signWith(SignatureAlgorithm.HS512,SECRET)
         .compact();
   }
